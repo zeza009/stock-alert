@@ -10,7 +10,7 @@ LINE_USER_ID = os.environ["LINE_USER_ID"]
 
 def send_line(message):
     try:
-        requests.post(
+        r = requests.post(
             "https://api.line.me/v2/bot/message/push",
             headers={
                 "Authorization": f"Bearer {LINE_TOKEN}",
@@ -21,7 +21,7 @@ def send_line(message):
                 "messages": [{"type": "text", "text": message}]
             }
         )
-        print("✅ ส่ง LINE สำเร็จ")
+        print(f"✅ LINE: {r.status_code} {r.text}")
     except Exception as e:
         print(f"❌ LINE error: {e}")
 
@@ -34,15 +34,15 @@ def check_alerts():
         name   = stock["name"]
 
         try:
-            df   = yf.download(ticker, period="3y", interval="1wk", progress=False)
-            info = yf.Ticker(ticker).fast_info
+            tk   = yf.Ticker(ticker)
+            df   = tk.history(period="3y", interval="1wk")
+            info = tk.fast_info
 
             if df is None or len(df) < config.EMA_PERIOD:
-                print(f"⚠️ {name}: ข้อมูลไม่พอ")
+                print(f"⚠️ {name}: ข้อมูลไม่พอ ({len(df)} แท่ง)")
                 continue
 
-            price = float(info.last_price)
-
+            price  = float(info.last_price)
             df["EMA100"] = ta.trend.ema_indicator(df["Close"], window=config.EMA_PERIOD)
             ema100 = float(df["EMA100"].iloc[-1])
 
@@ -61,5 +61,8 @@ def check_alerts():
 
     if not found_alert:
         print("✓ ไม่มีหุ้นเข้าเงื่อนไข")
+
+# ทดสอบส่ง LINE
+send_line("🧪 ทดสอบระบบ Stock Alert\n✅ Bot ทำงานปกติ!\n⏰ " + datetime.now().strftime('%d/%m/%Y %H:%M'))
 
 check_alerts()
