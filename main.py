@@ -1,6 +1,6 @@
 import os
 import yfinance as yf
-import pandas_ta as ta
+import ta
 import requests
 import config
 from datetime import datetime
@@ -43,12 +43,11 @@ def check_alerts():
 
             price = float(info.last_price)
 
-            df["EMA100"] = ta.ema(df["Close"], length=config.EMA_PERIOD)
+            df["EMA100"] = ta.trend.ema_indicator(df["Close"], window=config.EMA_PERIOD)
             ema100 = float(df["EMA100"].iloc[-1])
 
             print(f"{name}: ราคา={price:.2f}, EMA100W={ema100:.2f}")
 
-            # แจ้งเตือนเมื่อราคาแตะหรือต่ำกว่า EMA 100 Weekly
             if price <= ema100:
                 msg  = f"🔔 {name} ({ticker})\n"
                 msg += "─" * 22 + "\n"
