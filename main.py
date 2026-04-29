@@ -4,6 +4,7 @@ import ta
 import requests
 import config
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 LINE_TOKEN   = os.environ["LINE_TOKEN"]
 LINE_USER_ID = os.environ["LINE_USER_ID"]
@@ -25,8 +26,11 @@ def send_line(message):
     except Exception as e:
         print(f"❌ LINE error: {e}")
 
+def now_thai():
+    return datetime.now(ZoneInfo("Asia/Bangkok")).strftime('%d/%m/%Y %H:%M')
+
 def check_alerts():
-    print(f"⏰ เช็คราคา: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"⏰ เช็คราคา: {now_thai()}")
     found_alert = False
 
     for stock in config.WATCHLIST:
@@ -42,9 +46,9 @@ def check_alerts():
                 print(f"⚠️ {name}: ข้อมูลไม่พอ ({len(df)} แท่ง)")
                 continue
 
-            price  = float(info.last_price)
+            price    = float(info.last_price)
             df["EMA100"] = ta.trend.ema_indicator(df["Close"], window=config.EMA_PERIOD)
-            ema100 = float(df["EMA100"].iloc[-1])
+            ema100   = float(df["EMA100"].iloc[-1])
 
             print(f"{name}: ราคา={price:.2f}, EMA100W={ema100:.2f}")
 
@@ -52,7 +56,7 @@ def check_alerts():
                 msg  = f"🔔 {name} ({ticker})\n"
                 msg += "─" * 22 + "\n"
                 msg += f"📉 ราคา {price:.2f} แตะ EMA100W ({ema100:.2f})\n"
-                msg += f"⏰ {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                msg += f"⏰ {now_thai()} (เวลาไทย)"
                 send_line(msg)
                 found_alert = True
 
@@ -61,8 +65,5 @@ def check_alerts():
 
     if not found_alert:
         print("✓ ไม่มีหุ้นเข้าเงื่อนไข")
-
-# ทดสอบส่ง LINE
-send_line("🧪 ทดสอบระบบ Stock Alert\n✅ Bot ทำงานปกติ!\n⏰ " + datetime.now().strftime('%d/%m/%Y %H:%M'))
 
 check_alerts()
