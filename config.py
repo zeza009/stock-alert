@@ -1,13 +1,14 @@
-WATCHLIST = [
-    {"ticker": "TSM",  "name": "TSMC"},
-    {"ticker": "ASML", "name": "ASML"},
-    {"ticker": "GOOG", "name": "Google"},
-    {"ticker": "AAPL", "name": "Apple"},
-    {"ticker": "MSFT", "name": "Microsoft"},
-    {"ticker": "NVDA", "name": "Nvidia"},
-    {"ticker": "GC=F", "name": "Gold (XAUUSD)"},
+US_STOCKS = [
+    {"ticker": "TSM",  "name": "TSMC",      "exchange": "NYSE"},
+    {"ticker": "ASML", "name": "ASML",      "exchange": "NASDAQ"},
+    {"ticker": "GOOG", "name": "Google",    "exchange": "NASDAQ"},
+    {"ticker": "AAPL", "name": "Apple",     "exchange": "NASDAQ"},
+    {"ticker": "MSFT", "name": "Microsoft", "exchange": "NASDAQ"},
+    {"ticker": "NVDA", "name": "Nvidia",    "exchange": "NASDAQ"},
 ]
 
-# เงื่อนไขแจ้งเตือน
-# แจ้งเตือนเมื่อราคาแตะหรือต่ำกว่า EMA 100 Weekly เท่านั้น
+GOLD = [
+    {"ticker": "XAUUSD", "name": "Gold", "exchange": "OANDA"},
+]
+
 EMA_PERIOD = 100
