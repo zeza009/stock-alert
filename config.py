@@ -1,14 +1,14 @@
 US_STOCKS = [
-    {"ticker": "TSM",  "name": "TSMC",      "exchange": "NYSE"},
-    {"ticker": "ASML", "name": "ASML",      "exchange": "NASDAQ"},
-    {"ticker": "GOOG", "name": "Google",    "exchange": "NASDAQ"},
-    {"ticker": "AAPL", "name": "Apple",     "exchange": "NASDAQ"},
-    {"ticker": "MSFT", "name": "Microsoft", "exchange": "NASDAQ"},
-    {"ticker": "NVDA", "name": "Nvidia",    "exchange": "NASDAQ"},
+    {"ticker": "TSM",  "name": "TSMC"},
+    {"ticker": "ASML", "name": "ASML"},
+    {"ticker": "GOOG", "name": "Google"},
+    {"ticker": "AAPL", "name": "Apple"},
+    {"ticker": "MSFT", "name": "Microsoft"},
+    {"ticker": "NVDA", "name": "Nvidia"},
 ]
 
 GOLD = [
-    {"ticker": "XAUUSD", "name": "Gold", "exchange": "OANDA"},
+    {"ticker": "GC=F", "name": "Gold"},
 ]
 
 EMA_PERIOD = 100
