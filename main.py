@@ -1,10 +1,10 @@
 import os
+import yfinance as yf
 import ta
 import requests
 import config
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from tvDatafeed import TvDatafeed, Interval
 
 LINE_TOKEN   = os.environ["LINE_TOKEN"]
 LINE_USER_ID = os.environ["LINE_USER_ID"]
@@ -32,29 +32,23 @@ def now_thai():
 
 def check_alerts(watchlist):
     print(f"⏰ เช็คราคา ({MODE}): {now_thai()}")
-
-    tv = TvDatafeed()
     found_alert = False
 
     for stock in watchlist:
-        ticker   = stock["ticker"]
-        name     = stock["name"]
-        exchange = stock.get("exchange", "NASDAQ")
+        ticker = stock["ticker"]
+        name   = stock["name"]
 
         try:
-            df = tv.get_hist(
-                symbol=ticker,
-                exchange=exchange,
-                interval=Interval.in_weekly,
-                n_bars=150
-            )
+            tk   = yf.Ticker(ticker)
+            df   = tk.history(period="3y", interval="1wk")
+            info = tk.fast_info
 
             if df is None or len(df) < config.EMA_PERIOD:
                 print(f"⚠️ {name}: ข้อมูลไม่พอ")
                 continue
 
-            price        = float(df["close"].iloc[-1])
-            df["EMA100"] = ta.trend.ema_indicator(df["close"], window=config.EMA_PERIOD)
+            price        = float(info.last_price)
+            df["EMA100"] = ta.trend.ema_indicator(df["Close"], window=config.EMA_PERIOD)
             ema100       = float(df["EMA100"].iloc[-1])
 
             print(f"{name}: ราคา={price:.2f}, EMA100W={ema100:.2f}")
