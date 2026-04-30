@@ -1,4 +1,4 @@
-tvDatafeed
+git+https://github.com/StreamAlpha/tvdatafeed.git
 pandas
 ta
 requests
