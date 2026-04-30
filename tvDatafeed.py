@@ -28,7 +28,6 @@ class TvDatafeed:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
             "Referer": "https://www.tradingview.com"
         })
-        # ไม่ login เลย ใช้ token ว่าง
         self.token = "unauthorized_user_token"
         print("✅ No-login mode")
 
