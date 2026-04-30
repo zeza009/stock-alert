@@ -84,3 +84,10 @@ if MODE == "gold":
     check_alerts(config.GOLD)
 else:
     check_alerts(config.US_STOCKS)
+# ทดสอบ — ลบออกหลังเทสแล้ว
+send_line("🧪 ทดสอบระบบ\n✅ tvDatafeed + LINE ทำงานปกติ!\n⏰ " + now_thai())
+
+if MODE == "gold":
+    check_alerts(config.GOLD)
+else:
+    check_alerts(config.US_STOCKS)
