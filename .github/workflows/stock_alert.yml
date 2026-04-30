@@ -2,25 +2,41 @@ name: Stock Alert
 
 on:
   schedule:
-    - cron: '*/15 2-21 * * 1-5'  # ทุก 15 นาที จันทร์-ศุกร์
-  workflow_dispatch:               # กดรันเองได้ด้วย
+    - cron: '*/5 14-21 * * 1-5'   # หุ้น US ทุก 5 นาที (21:30-04:00 ไทย)
+    - cron: '*/5 0-21 * * 1-5'    # ทอง ทุก 5 นาที (เกือบตลอดวัน)
+  workflow_dispatch:
 
 jobs:
-  check-stocks:
+  check-us-stocks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run stock alert
+      - run: pip install -r requirements.txt
+      - name: Run US stocks
         env:
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          TV_USERNAME: ${{ secrets.TV_USERNAME }}
+          TV_PASSWORD: ${{ secrets.TV_PASSWORD }}
+          MODE: "stocks"
+        run: python main.py
+
+  check-gold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Run gold
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          TV_USERNAME: ${{ secrets.TV_USERNAME }}
+          TV_PASSWORD: ${{ secrets.TV_PASSWORD }}
+          MODE: "gold"
         run: python main.py
