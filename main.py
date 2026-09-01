@@ -132,6 +132,8 @@ def check_us_stocks(watchlist):
     if alerted.get("date") != today:
         alerted = {"date": today}
 
+    blocks = []  # เก็บข้อความของหุ้นที่เข้าเงื่อนไข เพื่อส่งรวมทีเดียว
+
     for stock in watchlist:
         ticker    = stock["ticker"]
         name      = stock["name"]
@@ -168,19 +170,26 @@ def check_us_stocks(watchlist):
 
             if price <= ema_short:
                 emoji, insight = get_insight_stocks(price, ema_short, ema_long, name)
-                msg  = f"{emoji} {name} ({ticker})\n"
-                msg += "─" * 22 + "\n"
+                block  = f"{emoji} {name} ({ticker})\n"
+                block += "─" * 22 + "\n"
                 if price < ema_short:
-                    msg += f"📉 ราคา {price:.2f} ต่ำกว่า {short_label} ({ema_short:.2f})\n"
+                    block += f"📉 ราคา {price:.2f} ต่ำกว่า {short_label} ({ema_short:.2f})\n"
                 if price < ema_long:
-                    msg += f"📉 ราคา {price:.2f} ต่ำกว่า {long_label} ({ema_long:.2f})\n"
-                msg += f"\n💡 Insight:\n{insight}\n"
-                msg += f"\n⏰ {now_thai()} (เวลาไทย)"
-                send_line(msg)
+                    block += f"📉 ราคา {price:.2f} ต่ำกว่า {long_label} ({ema_long:.2f})\n"
+                block += f"\n💡 Insight:\n{insight}"
+                blocks.append(block)
                 alerted[ticker] = True
 
         except Exception as e:
             print(f"❌ Error {name}: {e}")
+
+    # ส่ง LINE ครั้งเดียว รวมทุกหุ้นที่เข้าเงื่อนไข
+    if blocks:
+        header = f"🔔 แจ้งเตือนหุ้น US ({len(blocks)} ตัว)\n\n"
+        footer = f"\n\n⏰ {now_thai()} (เวลาไทย)"
+        send_line(header + "\n\n".join(blocks) + footer)
+    else:
+        print("✅ ไม่มีหุ้นเข้าเงื่อนไข ไม่ต้องแจ้งเตือน")
 
     save_alerted(alerted)
 
@@ -195,6 +204,8 @@ def check_gold(watchlist):
     today   = today_str()
     if alerted.get("date") != today:
         alerted = {"date": today}
+
+    blocks = []  # เก็บข้อความที่เข้าเงื่อนไข เพื่อส่งรวมทีเดียว
 
     for stock in watchlist:
         ticker = stock["ticker"]
@@ -225,19 +236,26 @@ def check_gold(watchlist):
 
             if price <= ema_short:
                 emoji, insight = get_insight_gold(price, ema_short, ema_long)
-                msg  = f"{emoji} {name}\n"
-                msg += "─" * 22 + "\n"
+                block  = f"{emoji} {name}\n"
+                block += "─" * 22 + "\n"
                 if price < ema_short:
-                    msg += f"📉 ราคา {price:.2f} ต่ำกว่า EMA100D ({ema_short:.2f})\n"
+                    block += f"📉 ราคา {price:.2f} ต่ำกว่า EMA100D ({ema_short:.2f})\n"
                 if price < ema_long:
-                    msg += f"📉 ราคา {price:.2f} ต่ำกว่า EMA200D ({ema_long:.2f})\n"
-                msg += f"\n💡 Insight:\n{insight}\n"
-                msg += f"\n⏰ {now_thai()} (เวลาไทย)"
-                send_line(msg)
+                    block += f"📉 ราคา {price:.2f} ต่ำกว่า EMA200D ({ema_long:.2f})\n"
+                block += f"\n💡 Insight:\n{insight}"
+                blocks.append(block)
                 alerted[ticker] = True
 
         except Exception as e:
             print(f"❌ Error {name}: {e}")
+
+    # ส่ง LINE ครั้งเดียว รวมทุกตัวที่เข้าเงื่อนไข
+    if blocks:
+        header = f"🔔 แจ้งเตือนทอง ({len(blocks)} ตัว)\n\n"
+        footer = f"\n\n⏰ {now_thai()} (เวลาไทย)"
+        send_line(header + "\n\n".join(blocks) + footer)
+    else:
+        print("✅ ไม่มีรายการเข้าเงื่อนไข ไม่ต้องแจ้งเตือน")
 
     save_alerted(alerted)
 
